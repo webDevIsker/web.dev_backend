@@ -25,13 +25,13 @@ class CustomUserAdmin(UserAdmin):
 
 class VacationsAdmin(admin.ModelAdmin):
     list_display = ['doc_name', 'first_name', 'last_name', 'full_name', 'start_vacation', 'end_vacation', 'doc_date',
-                    'vacation_status']
-    ordering = ('doc_date',)
+                    'vacation_status', 'vacation_type']
+    ordering = ('-doc_date',)
 
 
 class LogListAdmin(admin.ModelAdmin):
     list_display = ['doc_name', 'first_name', 'last_name', 'full_name', 'doc_date', 'doc_status']
-    ordering = ('doc_date',)
+    ordering = ('-doc_date',)
 
 
 admin.site.register(CustomUser, CustomUserAdmin)

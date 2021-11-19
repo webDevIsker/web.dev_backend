@@ -39,7 +39,7 @@ class VacationsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Vacations
         fields = ['id', 'id_user', 'id_num', 'first_name', 'last_name', 'full_name', 'doc_name', 'start_vacation',
-                  'end_vacation', 'vacation_status', 'doc_date']
+                  'end_vacation', 'vacation_status', 'doc_date', 'vacation_type']
 
 
 class LogListSerializer(serializers.ModelSerializer):
@@ -47,3 +47,4 @@ class LogListSerializer(serializers.ModelSerializer):
         model = LogList
         fields = ['id', 'id_user', 'id_num', 'first_name', 'last_name', 'full_name', 'doc_name', 'doc_status',
                   'doc_date']
+

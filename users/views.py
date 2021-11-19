@@ -63,7 +63,7 @@ class VacationsViewSet(viewsets.ModelViewSet):
 
 
 class LogListViewSet(viewsets.ModelViewSet):
-    queryset = LogList.objects.all()
+    queryset = LogList.objects.all().order_by('-doc_date')
     serializer_class = LogListSerializer
     permission_classes = [permissions.IsAuthenticated]
 

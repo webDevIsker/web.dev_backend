@@ -43,7 +43,9 @@ class Vacations(models.Model):
     end_vacation = models.DateField(verbose_name='Окончание отпуска', null=True)
 
     doc_date = models.DateTimeField(verbose_name='Дата создания', null=True, auto_now=True, blank=True)
+
     vacation_status = models.CharField(verbose_name='Статус', max_length=250)
+    vacation_type = models.CharField(verbose_name='Тип отпуска', max_length=250)
 
     class Meta:
         verbose_name = 'Заявки на отпуск'
