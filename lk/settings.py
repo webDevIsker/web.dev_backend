@@ -158,6 +158,7 @@ CORS_ALLOWED_ORIGINS = [
     'http://127.0.0.1',
     'http://127.0.0.1:3000',
     'http://nls-test',
+    'https://iskerfront.herokuapp.com',
 ]
 
 SIMPLE_JWT = {
