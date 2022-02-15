@@ -12,13 +12,16 @@ class CustomUser(AbstractUser):
         (PRIVATE_PERSON, 'Частное лицо'),
     ]
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    full_name = models.CharField(verbose_name='Организация', max_length=250,
-                                 unique=True, null=True, blank=True)
+    full_name = models.CharField(verbose_name='Организация', max_length=250, null=True, blank=True)
     third_name = models.CharField(verbose_name='Отчество', max_length=250, null=True, blank=True)
     phone = models.CharField(verbose_name='Телефон', max_length=250, null=True, blank=True)
     status = models.CharField(verbose_name='Юр/Физлицо', max_length=50, choices=COMPANY_PRIVATE,
                               default=COMPANY)
     id_num = models.CharField(verbose_name='ИИН', max_length=15, default='000000000000', null=True, blank=True)
+    email_corp = models.EmailField(verbose_name='Корпоративная почта', default='', null=True, blank=True)
+    one_off = models.CharField(verbose_name='Одноразовый пароль', max_length=250, null=True, blank=True)
+
+    # f_enter = models.BooleanField(verbose_name='New user', default=True, blank=True)
     # available_vacations = models.IntegerField(verbose_name='Доступные дни отпуска', default=0, blank=True)
     # deleted because not used
 
@@ -27,25 +30,19 @@ class Vacations(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, unique=True)
     doc_name = models.CharField(verbose_name='Название документа', max_length=250)
 
-    # doc_id_1c = models.CharField(verbose_name='Идентификатор документа 1С', max_length=250, default='')
-    # doc_id_1cDoc = models.CharField(verbose_name='Идентификатор документа 1С.Документооборот', max_length=250,
-    #                                 default='')
-
-    # days_used = models.IntegerField(verbose_name='Количество дней отпуска', default=0) deleted because not used
-
     id_user = models.UUIDField(default=uuid.uuid4, verbose_name='Идентификатор пользователя')
     id_num = models.CharField(verbose_name='ИИН', max_length=15, default='000000000000', null=True, blank=True)
     first_name = models.CharField(verbose_name='Имя', max_length=250)
     last_name = models.CharField(verbose_name='Фамилия', max_length=250)
-    full_name = models.CharField(verbose_name='Организация', max_length=250)
 
     start_vacation = models.DateField(verbose_name='Начало отпуска', null=True)
     end_vacation = models.DateField(verbose_name='Окончание отпуска', null=True)
 
-    doc_date = models.DateTimeField(verbose_name='Дата создания', null=True, auto_now=True, blank=True)
+    doc_date = models.DateTimeField(verbose_name='Дата создания', null=True, blank=True)
 
     vacation_status = models.CharField(verbose_name='Статус', max_length=250)
     vacation_type = models.CharField(verbose_name='Тип отпуска', max_length=250)
+    line_manager = models.CharField(verbose_name='Line Manager', max_length=250, default='')
 
     class Meta:
         verbose_name = 'Заявки на отпуск'
@@ -55,22 +52,50 @@ class Vacations(models.Model):
 class LogList(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, unique=True)
 
-    # doc_id_1c = models.CharField(verbose_name='Идентификатор документа 1С', max_length=250, default='')
-    # doc_id_1cDoc = models.CharField(verbose_name='Идентификатор документа 1С.Документооборот', max_length=250,
-    #                                 default='')
-
-    id_user = models.UUIDField(default=uuid.uuid4, verbose_name='Идентификатор пользователя', editable=False)
+    id_user = models.UUIDField(default=uuid.uuid4, verbose_name='Идентификатор пользователя')
     id_num = models.CharField(verbose_name='ИИН', max_length=15, default='000000000000', null=True, blank=True)
     first_name = models.CharField(verbose_name='Имя', max_length=250)
     last_name = models.CharField(verbose_name='Фамилия', max_length=250)
-    full_name = models.CharField(verbose_name='Организация', max_length=250)
 
     doc_name = models.CharField(verbose_name='Название документа', max_length=250)
-    doc_date = models.DateTimeField(verbose_name='Дата создания', null=True, auto_now=True)
+    doc_date = models.DateTimeField(verbose_name='Дата создания', null=True)
     doc_status = models.CharField(verbose_name='Статус', max_length=250)
+    description = models.CharField(verbose_name='Описание/Номер', max_length=250, default='', null=True)
+    tag = models.CharField(verbose_name='tag', max_length=250, default='')
 
     class Meta:
         verbose_name = 'Список логов'
         verbose_name_plural = 'Список логов'
 
 
+class MawsEditStatus(models.Model):
+    id = models.IntegerField(primary_key=True, unique=True, editable=False)
+
+    id_user = models.UUIDField(default=uuid.uuid4, verbose_name='Идентификатор пользователя')
+
+    user = models.CharField(verbose_name='Пользователь', max_length=250)
+    storage = models.CharField(verbose_name='Склад', max_length=250)
+    placement = models.CharField(verbose_name='Помещение', max_length=250)
+
+    class Meta:
+        verbose_name = 'Статусы помещений'
+        verbose_name_plural = 'Статусы помещений'
+
+
+class FormsMaws(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, unique=True)
+    id_user = models.UUIDField(default=uuid.uuid4, verbose_name='Идентификатор пользователя')
+    name = models.TextField(verbose_name='Название', default='')
+
+    goods = models.TextField(verbose_name='goods JSON', default='')
+    responsibles = models.TextField(verbose_name='responsibles JSON', default='')
+
+    location = models.CharField(verbose_name='Локация', max_length=250, default='')
+    storage = models.CharField(verbose_name='Склад', max_length=250, default='')
+    placement = models.CharField(verbose_name='Помещение', max_length=250, default='')
+    manager = models.CharField(verbose_name='Менеджер склада', max_length=250, default='')
+    date = models.CharField(verbose_name='Дата', max_length=250, default='')
+
+    class Meta:
+        verbose_name = 'Черновики МАФС'
+        verbose_name_plural = 'Черновики МАФС'

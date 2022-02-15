@@ -31,6 +31,8 @@ ALLOWED_HOSTS = [
     '127.0.0.1:8000',
     '127.0.0.1',
     'web-dev',
+    'intra.isker.kz',
+    'intra.isker.kz:8080',
     '*',
 ]
 
@@ -51,8 +53,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
     'django_filters',
-    'catalogs.apps.CatalogsConfig',
-    'price.apps.OrdersConfig',
+    'djoser',
 ]
 
 MIDDLEWARE = [
@@ -71,8 +72,7 @@ ROOT_URLCONF = 'lk.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates']
-        ,
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -145,6 +145,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'users.CustomUser'
 
 REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.BasicAuthentication',
@@ -156,9 +159,12 @@ REST_FRAMEWORK = {
 
 CORS_ALLOWED_ORIGINS = [
     'http://127.0.0.1',
+    'http://127.0.0.1:8081',
     'http://127.0.0.1:3000',
     'http://nls-test',
-    'https://iskerfront.herokuapp.com',
+    'http://nls-1c',
+    'http://192.168.0.186:8080',
+    'http://192.168.101.2:8080',
 ]
 
 SIMPLE_JWT = {
