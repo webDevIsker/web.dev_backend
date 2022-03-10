@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .forms import CustomUserCreationForm, CustomUserChangeForm
-from .models import CustomUser, Vacations, LogList, MawsEditStatus, FormsMaws
+from .models import CustomUser, Vacations, LogList, MawsEditStatus, FormsMaws, EditEmails, EditPhone
 
 admin.site.site_header = 'Панель администратора'
 
@@ -27,7 +27,7 @@ class CustomUserAdmin(UserAdmin):
 
 class VacationsAdmin(admin.ModelAdmin):
     list_display = ['doc_name', 'first_name', 'last_name', 'start_vacation', 'end_vacation', 'doc_date',
-                    'vacation_status', 'vacation_type', 'line_manager', ]
+                    'vacation_status', 'vacation_type',]
     ordering = ('-doc_date',)
 
 
@@ -45,8 +45,18 @@ class FormsMawsAdmin(admin.ModelAdmin):
                     'date']
 
 
+class EditEmailsAdmin(admin.ModelAdmin):
+    list_display = ['id', 'email', 'v_code']
+
+
+class EditPhoneAdmin(admin.ModelAdmin):
+    list_display = ['id', 'phone', 'v_code']
+
+
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(Vacations, VacationsAdmin)
 admin.site.register(LogList, LogListAdmin)
 admin.site.register(MawsEditStatus, MawsEditStatusAdmin)
 admin.site.register(FormsMaws, FormsMawsAdmin)
+admin.site.register(EditEmails, EditEmailsAdmin)
+admin.site.register(EditPhone, EditPhoneAdmin)

@@ -1,4 +1,4 @@
-from rest_framework import viewsets, permissions, status
+from rest_framework import viewsets, permissions, generics
 
 from .serializers import *
 from django.contrib.auth import get_user_model
@@ -6,14 +6,24 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from .models import Vacations, LogList, MawsEditStatus, FormsMaws
+from .models import Vacations, LogList, MawsEditStatus, FormsMaws, EditEmails
+from rest_framework.authtoken.models import Token
 
 
-class Logout(APIView):
+class ChangePasswordView(generics.UpdateAPIView):
+    serializer_class = ChangePasswordSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
-    def get(self, request, format=None):
-        request.user.auth_token.delete()
-        return Response(status=status.HTTP_200_OK)
+    def update(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        # if using drf authtoken, create a new token
+        if hasattr(user, 'auth_token'):
+            user.auth_token.delete()
+        token, created = Token.objects.get_or_create(user=user)
+        # return new token
+        return Response({'token': token.key}, status=status.HTTP_200_OK)
 
 
 class CustomUserViewSet(viewsets.ModelViewSet):
@@ -72,6 +82,8 @@ class VacationsViewSet(viewsets.ModelViewSet):
         data = request.data
 
         vacations.vacation_status = data.get("vacation_status", vacations.vacation_status)
+        vacations.description = data.get("description", vacations.description)
+        vacations.decree = data.get("decree", vacations.decree)
 
         vacations.save()
         # serializer = VacationsSerializer(vacations)
@@ -91,6 +103,7 @@ class LogListViewSet(viewsets.ModelViewSet):
         loglist.doc_date = data.get("doc_date", loglist.doc_date)
         loglist.doc_status = data.get("doc_status", loglist.doc_status)
         loglist.description = data.get("description", loglist.description)
+        loglist.decree = data.get("decree", loglist.decree)
 
         loglist.save()
         # serializer = LogListSerializer(loglist)
@@ -156,13 +169,8 @@ class FormsMawsViewSet(viewsets.ModelViewSet):
     @action(detail=False)
     def delete_post(self, request, *arg, **kwarg):
         queryset = FormsMaws.objects.all()
-        # retrieve the selected items
         id = self.request.query_params.get('id')
-        # name = self.request.query_params.get('name')
-        # qs = self.filter_queryset(self.get_queryset())
-        # qs = queryset.filter(id_user=id_user, name=name)
         qs = queryset.filter(id=id)
-
         # delete the selected item
         qs.delete()
         # return deleted
@@ -179,5 +187,33 @@ class CheckUserViewSet(viewsets.ReadOnlyModelViewSet):
         return get_user_model().objects.filter(id_num=id_num)
 
 
+class EditEmailsViewSet(viewsets.ModelViewSet):
+    queryset = EditEmails.objects.all()
+    serializer_class = EditEmailsSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
 
+class EditPhoneViewSet(viewsets.ModelViewSet):
+    queryset = EditPhone.objects.all()
+    serializer_class = EditPhoneSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class UpdateUserViewSet(viewsets.ModelViewSet):
+    queryset = get_user_model().objects.all()
+    serializer_class = CustomUserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def patch(self, request, *arg, **kwarg):
+        id_num = self.kwargs['id_num']
+        updateuser = get_user_model().objects.get(id_num=id_num)
+        data = request.data
+        if data:
+            updateuser.phone = data.get("phone", updateuser.phone)
+            updateuser.email_corp = data.get("email_corp", updateuser.email_corp)
+            updateuser.first_name = data.get("first_name", updateuser.first_name)
+            updateuser.last_name = data.get("last_name", updateuser.last_name)
+            updateuser.third_name = data.get("third_name", updateuser.third_name)
+
+        updateuser.save()
+        return Response(status=status.HTTP_200_OK)

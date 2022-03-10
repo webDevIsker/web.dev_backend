@@ -1,0 +1,1 @@
+start C:\Users\JFOX\PycharmProjects\djangoProject\venv\Scripts\python.exe C:\Users\JFOX\PycharmProjects\djangoProject\telegram_upd.py

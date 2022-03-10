@@ -44,6 +44,9 @@ class Vacations(models.Model):
     vacation_type = models.CharField(verbose_name='Тип отпуска', max_length=250)
     line_manager = models.CharField(verbose_name='Line Manager', max_length=250, default='')
 
+    description = models.CharField(verbose_name='Описание/Номер', max_length=250, default='', null=True)
+    decree = models.CharField(verbose_name='Приказ', max_length=250, default='', null=True)
+
     class Meta:
         verbose_name = 'Заявки на отпуск'
         verbose_name_plural = 'Заявки на отпуск'
@@ -61,6 +64,7 @@ class LogList(models.Model):
     doc_date = models.DateTimeField(verbose_name='Дата создания', null=True)
     doc_status = models.CharField(verbose_name='Статус', max_length=250)
     description = models.CharField(verbose_name='Описание/Номер', max_length=250, default='', null=True)
+    decree = models.CharField(verbose_name='Приказ', max_length=250, default='', null=True)
     tag = models.CharField(verbose_name='tag', max_length=250, default='')
 
     class Meta:
@@ -99,3 +103,24 @@ class FormsMaws(models.Model):
     class Meta:
         verbose_name = 'Черновики МАФС'
         verbose_name_plural = 'Черновики МАФС'
+
+
+class EditEmails(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, unique=True)
+    email = models.EmailField(verbose_name='Новая почта', default='')
+    v_code = models.CharField(verbose_name='Код подтверждения', default='', max_length=6)
+
+    class Meta:
+        verbose_name = 'Email verification'
+        verbose_name_plural = 'Email verification'
+
+
+class EditPhone(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, unique=True)
+    id_num = models.CharField(verbose_name='ИИН', max_length=15, default='')
+    phone = models.CharField(verbose_name='Новый телефон', default='', max_length=12)
+    v_code = models.CharField(verbose_name='Код подтверждения', default='', max_length=6)
+
+    class Meta:
+        verbose_name = 'Phone verification'
+        verbose_name_plural = 'Phone verification'

@@ -13,5 +13,3 @@ class CustomUserChangeForm(UserChangeForm):
     class Meta(UserChangeForm.Meta):
         model = CustomUser
         fields = UserCreationForm.Meta.fields + ('full_name', 'status')
-
-

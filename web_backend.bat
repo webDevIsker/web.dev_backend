@@ -1,0 +1,1 @@
+start C:\Users\JFOX\PycharmProjects\djangoProject\venv\Scripts\python.exe C:\Users\JFOX\PycharmProjects\djangoProject\manage.py runserver 192.168.0.151:8000
